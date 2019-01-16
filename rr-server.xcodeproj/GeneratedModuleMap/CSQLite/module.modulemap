@@ -1,0 +1,4 @@
+module CSQLite {
+    umbrella "/home/dieworld/rr-server/.build/checkouts/sqlite.git-447323261137515093/Sources/CSQLite/include"
+    export *
+}

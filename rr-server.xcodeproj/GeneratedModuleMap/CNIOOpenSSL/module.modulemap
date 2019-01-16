@@ -1,0 +1,4 @@
+module CNIOOpenSSL {
+    umbrella "/home/dieworld/rr-server/.build/checkouts/swift-nio-ssl.git--9014605191523295679/Sources/CNIOOpenSSL/include"
+    export *
+}

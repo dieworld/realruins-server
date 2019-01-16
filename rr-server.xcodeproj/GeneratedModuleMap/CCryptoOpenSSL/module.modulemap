@@ -1,0 +1,4 @@
+module CCryptoOpenSSL {
+    umbrella "/home/dieworld/rr-server/.build/checkouts/crypto.git-6678703596110457582/Sources/CCryptoOpenSSL/include"
+    export *
+}
