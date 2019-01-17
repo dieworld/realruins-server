@@ -17,4 +17,10 @@ public func routes(_ router: Router) throws {
     router.get("todos", use: todoController.index)
     router.post("todos", use: todoController.create)
     router.delete("todos", Todo.parameter, use: todoController.delete)
+
+    let gameMapController = MapsController()
+    router.get("maps", use: gameMapController.index)
+    router.get("maps", "random", use: gameMapController.random)
+    router.post("maps", use: gameMapController.create)
+    router.delete("maps", GameMap.parameter, use: gameMapController.delete)
 }
