@@ -27,12 +27,7 @@
  */
 
 import Foundation
-
-#if os(Linux)
-    import zlibLinux
-#else
-    import zlib
-#endif
+import zlib
 
 /**
  Compression level whose rawValue is based on the zlib's constants.
