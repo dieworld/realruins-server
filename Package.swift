@@ -11,7 +11,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-mysql.git", from: "3.0.0"),
         
         // 📦 S3 Storage - uncomment it when they add support for custom regions
-        .package(url: "https://github.com/dieworld/storage.git", from: "1.0.0-beta")
+        .package(url: "https://github.com/dieworld/storage.git", from: "1.0.0-beta"),
+        
     ],
     targets: [
         .target(name: "App", dependencies: ["Storage", "FluentMySQL", "Vapor"]),

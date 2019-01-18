@@ -8,6 +8,11 @@
 import Vapor
 import Fluent
 import FluentMySQL
+import Storage
+
+struct GameId: Content {
+    let gameId: String?
+}
 
 /// Controls basic CRUD operations on `Map`s.
 final class MapsController {
@@ -30,21 +35,42 @@ final class MapsController {
             return req.eventLoop.newFailedFuture(error: RealRuinsError.noData)
         }
         
-        let gameMap = GameMap.init(blueprintData: data)
+        //on some reason it doesn't work with gameId as Int, so I have to use String
+        let gameId = try? req.query.decode(GameId.self)
+        let gameMap = try GameMap.init(blueprintData: data, externalGameId: Int(gameId?.gameId ?? ""))
+        
         return GameMap.query(on: req)
             .filter(\.gameId == gameMap.gameId)
             .filter(\.tileId == gameMap.tileId)
             .first().flatMap { (storedMap) -> EventLoopFuture<GameMap> in
             
             if let storedMap = storedMap {
+                /// Updating existing map
                 storedMap.updatedAt = Date()
                 storedMap.height = gameMap.height
                 storedMap.width = gameMap.width
-                //save to S3
-                return storedMap.update(on: req)
+                return try Storage
+                    .upload(bytes: data,
+                            fileName: storedMap.nameInBucket,
+                            fileExtension: "bp", mime: "application/octet-stream",
+                            folder: nil, on: req)
+                    .flatMap({ (result) -> EventLoopFuture<GameMap> in
+                        return storedMap.update(on: req)
+                    })
+
+                
             } else {
-                //save to S3
-                return gameMap.save(on: req)
+                /// Creating a new map object
+                let filename = UUID.init().uuidString;
+                return try Storage
+                    .upload(bytes: data,
+                            fileName: filename,
+                            fileExtension: "bp", mime: "application/octet-stream",
+                            folder: nil, on: req)
+                    .flatMap({ (result) -> EventLoopFuture<GameMap> in
+                        gameMap.nameInBucket = filename
+                        return gameMap.save(on: req)
+                })
             }
         }
     }

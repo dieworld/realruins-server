@@ -9,4 +9,6 @@ import Foundation
 
 enum RealRuinsError: Error {
     case noData
+    case malformedBlueprintGZIP
+    case malformedBlueprintXML
 }

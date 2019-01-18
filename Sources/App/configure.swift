@@ -37,11 +37,14 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     /// Register S3 service
     let driver = try S3Driver(
         bucket: "realruinsv2",
-        host: "digitaloceanspaces.com",
+        host: "sfo2.digitaloceanspaces.com",
         accessKey: S3ApiKey,
         secretKey: S3ApiSecret,
-        region: "sfo2")
-    services.register(driver)
+        region: "sfo2",
+        pathTemplate: "/#file"
+    )
+    services.register(driver, as: NetworkDriver.self)
+    
 
 
     /// Configure migrations

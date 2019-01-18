@@ -8,7 +8,7 @@
 import Foundation
 import FluentMySQL
 import Vapor
-import NIO
+import zlib
 
 /// A single entry of a GameMap blueprint
 final class GameMap: MySQLModel {
@@ -30,16 +30,51 @@ final class GameMap: MySQLModel {
     
     ///File name as it is stored in bucket
     var nameInBucket: String
+    var biome: String
     
     /// Creates a new or updates existing game map blueprint
-    init(blueprintData: Data) {
-        seed = "n/a"
-        tileId = Int.random(in: 0...10)
-        gameId = Int.random(in: 0...10)
-        width = 0
-        height = 0
+    init(blueprintData: Data, externalGameId: Int?) throws {
+        
+        guard let unzipped = try? blueprintData.gunzipped() else {
+            throw RealRuinsError.malformedBlueprintGZIP
+        }
+        
+        guard let blueprint = try? XMLDocument.init(data: unzipped, options: []) else {
+            throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        guard let root = blueprint.rootElement() else {
+            throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        guard let blueprintWidth = Int(root.attribute(forName: "width")?.stringValue ?? ""),
+            let blueprintHeight = Int(root.attribute(forName: "height")?.stringValue ?? "") else {
+                throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        width = blueprintWidth
+        height = blueprintHeight
+        biome = root.attribute(forName: "biomeDef")?.stringValue ?? ""
+        
+        guard let world = root.elements(forName: "world").first else {
+            throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        guard let blueprintSeed = world.attribute(forName: "seed")?.stringValue,
+            let blueprintTileId = Int(world.attribute(forName: "tile")?.stringValue ?? "")  else {
+            throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        guard let blueprintGameId = Int(world.attribute(forName: "gameId")?.stringValue ?? "") ?? externalGameId else {
+            throw RealRuinsError.malformedBlueprintXML
+        }
+        
+        seed = blueprintSeed
+        tileId = blueprintTileId
+        gameId = blueprintGameId
+        
         updatedAt = Date()
-        nameInBucket = "fish.txt"
+        nameInBucket = UUID.init().uuidString
     }
 }
 
@@ -48,17 +83,13 @@ extension GameMap: Migration { }
 
 /// Allows `GameMap` to be encoded to and decoded from HTTP messages.
 extension GameMap: Content {
-    public static func decode(from req: Request) throws -> Future<GameMap> {
-        return try req.content.decode(Data.self).map { (data) -> (GameMap) in
-            let content = GameMap.init(blueprintData: Data())
-            return content
-        }
-    }
-    
-    public static func decode(from res: Response, for req: Request) throws -> Future<GameMap> {
-        let content = try res.content.decode(GameMap.self)
-        return content
-    }
 }
+
 /// Allows `Todo` to be used as a dynamic parameter in route definitions.
 extension GameMap: Parameter { }
+
+
+/// Decompress and analyze blueprints
+extension GameMap {
+    
+}
