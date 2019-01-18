@@ -18,6 +18,9 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
 
 
     // Configure a MySQL database
+
+    try services.register(FluentMySQLProvider())
+
     let mysql = MySQLDatabase(config: MySQLDatabaseConfig(hostname: "localhost", port: 3306, username: "realruins", password: DatabasePassword, database: "realruins", capabilities: MySQLCapabilities.default, characterSet: MySQLCharacterSet.utf8_general_ci, transport: MySQLTransportConfig.cleartext))
     
 
