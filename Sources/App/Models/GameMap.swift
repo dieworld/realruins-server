@@ -8,7 +8,7 @@
 import Foundation
 import FluentMySQL
 import Vapor
-import zlib
+import Gzip
 
 /// A single entry of a GameMap blueprint
 final class GameMap: MySQLModel {

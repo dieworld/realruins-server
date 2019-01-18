@@ -13,9 +13,12 @@ let package = Package(
         // 📦 S3 Storage - uncomment it when they add support for custom regions
         .package(url: "https://github.com/dieworld/storage.git", from: "1.0.0-beta"),
         
+        // 🗄 GZip implementation for swift
+        .package(url: "https://github.com/1024jp/GzipSwift.git", from: "4.0.4"),
+        
     ],
     targets: [
-        .target(name: "App", dependencies: ["Storage", "FluentMySQL", "Vapor"]),
+        .target(name: "App", dependencies: ["Storage", "Gzip", "FluentMySQL", "Vapor"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]
