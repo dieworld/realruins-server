@@ -15,6 +15,6 @@ public func routes(_ router: Router) throws {
     let gameMapController = MapsController()
     router.get("maps", use: gameMapController.index)
     router.get("maps", "random", use: gameMapController.random)
-    router.post("maps", use: gameMapController.create)
+    router.get("maps", "seed", String.parameter, use: gameMapController.withSeed)
     router.delete("maps", GameMap.parameter, use: gameMapController.delete)
 }

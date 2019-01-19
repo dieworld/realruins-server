@@ -29,6 +29,20 @@ final class MapsController {
             .all()
     }
     
+    func withSeed(_ req: Request) throws -> Future<[GameMap]> {
+        if let seed = try? req.parameters.next(String.self) {
+            let seedDecoded = seed.removingPercentEncoding ?? seed
+            return GameMap
+                .query(on: req)
+                .filter(\.seed == seedDecoded)
+                .sort(MySQLOrderBy.orderBy(MySQLExpression.function("RAND"), MySQLDirection.ascending))
+                .range(..<200)
+                .all()
+        } else {
+            throw RealRuinsError.invalidParameters("No seed provided")
+        }
+    }
+    
     /// Saves a decoded `Todo` to the database.
     func create(_ req: Request) throws -> Future<GameMap> {
         guard let data = req.http.body.data else {

@@ -28,6 +28,10 @@ struct RealRuinsError: Debuggable {
         return RealRuinsError.init(identifier: "Malformed map XML", reason: additional)
     }
     
+    static func invalidParameters(_ additional : String) -> RealRuinsError {
+        return RealRuinsError.init(identifier: "InvalidParameters", reason: additional)
+    }
+    
     public init(
         identifier: String,
         reason: String,
