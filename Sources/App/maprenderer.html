@@ -1,13 +1,41 @@
 <html>
 <head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	
 	<script type="text/javascript">
-		var data = [[{}, {"t": "rock", "i": [{"def": "anus", "matDef": "steel"}]}]];
-		function OnLoad() {
+		
+		function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
 
+
+		function OnLoad() {
+			var data = [];
+
+			$.ajax({
+ 			 url: 'http://woolstrand.art:9000/maps/json/15281',
+			  async: false,
+ 			 dataType: 'json',
+ 			 success: function (response) {
+   				data = response
+  			  }
+			});
+
+			for (var y = 0; y < data.length; y++) {
+				row = data[y];
+				for (var x = 0; x < row.length; x ++) {
+					item = row[x];
+					$('#map').append('<div style="width: 10px; height: 10px; background: ' + '#' + pad(x*y, 6) + ';">&nbsp;</div>');
+				}
+				$('#map').append('<br/>');
+			}
 		}
 	</script>
 </head>
-<body>
-	
+<body onload="OnLoad();">
+	<div id="map">
+	</div>
 </body>
 </html>

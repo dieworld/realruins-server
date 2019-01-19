@@ -10,13 +10,19 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     try routes(router)
     services.register(router, as: Router.self)
 
+
+    let corsConfig = CORSMiddleware.Configuration.init(allowedOrigin: .all, allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH], allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith])
+    let corsMiddleware = CORSMiddleware(configuration: corsConfig)
+
     /// Register middleware
     var middlewares = MiddlewareConfig() // Create _empty_ middleware config
     /// middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
+    middlewares.use(corsMiddleware)
     middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
     services.register(middlewares)
 
 
+    
     // Configure a MySQL database
 
     try services.register(FluentMySQLProvider())
@@ -42,8 +48,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     )
     services.register(driver, as: NetworkDriver.self)
     
-
-
     /// Configure migrations
  //   var migrations = MigrationConfig()
 //    migrations.add(model: Todo.self, database: .sqlite)

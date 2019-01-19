@@ -56,6 +56,9 @@ final class MapsController {
     }
     
     func json(_ req: Request) throws -> Future<[[GameCell]]> {
+        
+        
+        
         guard let mapId = try? req.parameters.next(Int.self) else {
             throw RealRuinsError.invalidParameters("No ID provided")
         }
@@ -116,10 +119,8 @@ final class MapsController {
                         cells[nodeZ][nodeX] = gameCell
                     }
                 }
-                
                 return cells
             })
-
     }
     
     /// Saves a decoded `GameMap` to the database.
