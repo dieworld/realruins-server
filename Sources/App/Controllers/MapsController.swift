@@ -14,6 +14,18 @@ struct GameId: Content {
     let gameId: String?
 }
 
+
+struct GameCell: Content {
+    var terrain: GameObject?
+    var objects: [GameObject] = []
+}
+
+struct GameObject: Content {
+    let def: String
+    let stuffDef: String?
+    let artDesc: String?
+}
+
 /// Controls basic CRUD operations on `Map`s.
 final class MapsController {
     /// Returns a list of all `Map`s.
@@ -43,7 +55,74 @@ final class MapsController {
         }
     }
     
-    /// Saves a decoded `Todo` to the database.
+    func json(_ req: Request) throws -> Future<[[GameCell]]> {
+        guard let mapId = try? req.parameters.next(Int.self) else {
+            throw RealRuinsError.invalidParameters("No ID provided")
+        }
+        
+        return GameMap
+            .find(mapId, on: req)
+            .flatMap(to: Response.self, { (gameMap) throws -> Future<Response> in
+                if let name = gameMap?.nameInBucket {
+                    let fullName = "https://realruinsv2.sfo2.digitaloceanspaces.com" + "/" + name + ".bp"
+                    return try req.client().get(fullName)
+                } else {
+                    return req.eventLoop.newFailedFuture(error: RealRuinsError.invalidParameters("not found"))
+                }
+            }).map(to: [[GameCell]].self, { (response) throws -> [[GameCell]] in
+                guard let blueprintData = response.http.body.data else {
+                    throw RealRuinsError.noData()
+                }
+                
+                guard let unzipped = try? blueprintData.gunzipped() else {
+                    throw RealRuinsError.malformedBlueprintGZIP()
+                }
+                
+                guard let blueprint = try? XMLDocument.init(data: unzipped, options: []) else {
+                    throw RealRuinsError.malformedBlueprintXML("Can't init XML")
+                }
+                
+                guard let root = blueprint.rootElement() else {
+                    throw RealRuinsError.malformedBlueprintXML("No root element found")
+                }
+                
+                guard let blueprintWidth = Int(root.attribute(forName: "width")?.stringValue ?? ""),
+                    let blueprintHeight = Int(root.attribute(forName: "height")?.stringValue ?? "") else {
+                        throw RealRuinsError.malformedBlueprintXML("No height or width provided")
+                }
+                
+                var cells: [[GameCell]] = [[]]
+                for y in 0..<blueprintHeight {
+                    cells.append(Array())
+                    for _ in 0..<blueprintWidth {
+                        cells[y].append(GameCell.init())
+                    }
+                }
+                
+                for node in root.elements(forName: "cell") {
+                    if let nodeX = Int(node.attribute(forName: "x")?.stringValue ?? ""),
+                        let nodeZ = Int(node.attribute(forName: "z")?.stringValue ?? "") {
+                        var gameCell = cells[nodeZ][nodeX]
+                        if let terrainDef = node.elements(forName: "terrain").first?.attribute(forName: "def")?.stringValue {
+                            gameCell.terrain = GameObject.init(def: terrainDef, stuffDef: nil, artDesc: nil)
+                        }
+                        
+                        for item in node.elements(forName: "item") {
+                            if let itemDef = item.attribute(forName: "def")?.stringValue {
+                                let stuffDef = item.attribute(forName: "stuffDef")?.stringValue
+                                gameCell.objects.append(GameObject(def: itemDef, stuffDef: stuffDef, artDesc: ""))
+                            }
+                        }
+                        cells[nodeZ][nodeX] = gameCell
+                    }
+                }
+                
+                return cells
+            })
+
+    }
+    
+    /// Saves a decoded `GameMap` to the database.
     func create(_ req: Request) throws -> Future<GameMap> {
         guard let data = req.http.body.data else {
             return req.eventLoop.newFailedFuture(error: RealRuinsError.noData())
