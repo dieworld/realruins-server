@@ -32,12 +32,12 @@ final class MapsController {
     /// Saves a decoded `Todo` to the database.
     func create(_ req: Request) throws -> Future<GameMap> {
         guard let data = req.http.body.data else {
-            return req.eventLoop.newFailedFuture(error: RealRuinsError.noData)
+            return req.eventLoop.newFailedFuture(error: RealRuinsError.noData())
         }
         
         //on some reason it doesn't work with gameId as Int, so I have to use String
         let gameId = try? req.query.decode(GameId.self)
-        let gameMap = try GameMap.init(blueprintData: data, externalGameId: Int(gameId?.gameId ?? ""))
+        let gameMap = try GameMap.init(blueprintData: data, externalGameId: UInt64(gameId?.gameId ?? ""))
         
         return GameMap.query(on: req)
             .filter(\.gameId == gameMap.gameId)

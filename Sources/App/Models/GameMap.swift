@@ -21,7 +21,7 @@ final class GameMap: MySQLModel {
     ///Tile number on the global planet map
     var tileId: Int
     ///Game unique identifier
-    var gameId: Int
+    var gameId: UInt64
     
     var width: Int
     var height: Int
@@ -33,23 +33,23 @@ final class GameMap: MySQLModel {
     var biome: String
     
     /// Creates a new or updates existing game map blueprint
-    init(blueprintData: Data, externalGameId: Int?) throws {
+    init(blueprintData: Data, externalGameId: UInt64?) throws {
         
         guard let unzipped = try? blueprintData.gunzipped() else {
-            throw RealRuinsError.malformedBlueprintGZIP
+            throw RealRuinsError.malformedBlueprintGZIP()
         }
         
         guard let blueprint = try? XMLDocument.init(data: unzipped, options: []) else {
-            throw RealRuinsError.malformedBlueprintXML
+            throw RealRuinsError.malformedBlueprintXML("Can't init XML")
         }
         
         guard let root = blueprint.rootElement() else {
-            throw RealRuinsError.malformedBlueprintXML
+            throw RealRuinsError.malformedBlueprintXML("No root element found")
         }
         
         guard let blueprintWidth = Int(root.attribute(forName: "width")?.stringValue ?? ""),
             let blueprintHeight = Int(root.attribute(forName: "height")?.stringValue ?? "") else {
-                throw RealRuinsError.malformedBlueprintXML
+                throw RealRuinsError.malformedBlueprintXML("No height or width provided")
         }
         
         width = blueprintWidth
@@ -57,16 +57,16 @@ final class GameMap: MySQLModel {
         biome = root.attribute(forName: "biomeDef")?.stringValue ?? ""
         
         guard let world = root.elements(forName: "world").first else {
-            throw RealRuinsError.malformedBlueprintXML
+            throw RealRuinsError.malformedBlueprintXML("No world tag found")
         }
         
         guard let blueprintSeed = world.attribute(forName: "seed")?.stringValue,
             let blueprintTileId = Int(world.attribute(forName: "tile")?.stringValue ?? "")  else {
-            throw RealRuinsError.malformedBlueprintXML
+            throw RealRuinsError.malformedBlueprintXML("No seed or tile tags found")
         }
         
-        guard let blueprintGameId = Int(world.attribute(forName: "gameId")?.stringValue ?? "") ?? externalGameId else {
-            throw RealRuinsError.malformedBlueprintXML
+        guard let blueprintGameId = UInt64(world.attribute(forName: "gameId")?.stringValue ?? "") ?? externalGameId else {
+            throw RealRuinsError.malformedBlueprintXML("GameId is not provided either in XML or in request")
         }
         
         seed = blueprintSeed
