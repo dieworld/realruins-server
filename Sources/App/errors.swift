@@ -32,6 +32,10 @@ struct RealRuinsError: Debuggable {
         return RealRuinsError.init(identifier: "InvalidParameters", reason: additional)
     }
     
+    static func databaseNotAccessible() -> RealRuinsError {
+        return RealRuinsError.init(identifier: "DatabaseUnaccessible", reason: "Can't connect to the database")
+    }
+
     public init(
         identifier: String,
         reason: String,

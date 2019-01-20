@@ -8,10 +8,15 @@
 import Vapor
 import Fluent
 import FluentMySQL
+import MySQL
 import Storage
 
 struct GameId: Content {
     let gameId: String?
+}
+
+struct Limit: Content {
+    let limit: Int?
 }
 
 
@@ -24,6 +29,11 @@ struct GameObject: Content {
     let def: String
     let stuffDef: String?
     let artDesc: String?
+}
+
+struct Seed: Content {
+    let seed: String
+    let num: Int
 }
 
 /// Controls basic CRUD operations on `Map`s.
@@ -53,6 +63,16 @@ final class MapsController {
         } else {
             throw RealRuinsError.invalidParameters("No seed provided")
         }
+    }
+    
+    func topSeeds(_ req: Request) throws -> Future<[Seed]> {
+        let limitObj = try? req.query.decode(Limit.self)
+        let limit = limitObj?.limit ?? 50
+        
+        return req.withPooledConnection(to: .mysql) { conn throws -> Future<[Seed]> in
+            return conn.raw("SELECT seed, COUNT(*) AS num FROM GameMap GROUP BY seed ORDER BY num DESC LIMIT \(limit)")
+                .all(decoding: Seed.self)
+            }
     }
     
     func json(_ req: Request) throws -> Future<[[GameCell]]> {

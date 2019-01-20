@@ -16,9 +16,11 @@ let package = Package(
         // 🗄 GZip implementation for swift
         .package(url: "https://github.com/1024jp/GzipSwift.git", from: "4.0.4"),
         
+        // 🍃 An expressive, performant, and extensible templating language built for Swift.
+        .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
     ],
     targets: [
-        .target(name: "App", dependencies: ["Storage", "Gzip", "FluentMySQL", "Vapor"]),
+        .target(name: "App", dependencies: ["Storage", "Leaf", "Gzip", "FluentMySQL", "Vapor"]),
         .target(name: "Run", dependencies: ["App"]),
         .testTarget(name: "AppTests", dependencies: ["App"])
     ]

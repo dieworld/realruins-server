@@ -1,0 +1,126 @@
+<html>
+    <head>
+        <style>
+            div.floating {
+                background: #aaaaaa;
+                border: 2px solid black;
+                border-radius: 4px;
+                padding: 8px;
+                position: absolute;
+                font: 15px helvetica;
+            }
+        
+            </style>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript">
+            
+            let cellSize = 10;
+            var data = [];
+            var timeLoadedPage;
+            var timeLoadedData;
+            var timeRenderedData;
+            
+            function pad(num, size) {
+                var s = num+"";
+                while (s.length < size) s = "0" + s;
+                return s;
+            }
+        
+        function colorByItem(item) {
+            if (item.objects.length == 0 && item.terrain == undefined) return "#000000";
+            if (item.objects.length == 0 && item.terrain != undefined) return "#004400";
+            if (item.objects.length > 0) {
+                var foundWall = false;
+                var foundDoor = false;
+                var foundChunk = false;
+                for (var i = item.objects.length - 1; i >= 0; i--) {
+                    if (item.objects[i].def.toLowerCase().indexOf("wall") != -1) foundWall = true;
+                    if (item.objects[i].def.toLowerCase().indexOf("door") != -1) foundDoor = true;
+                    if (item.objects[i].def.toLowerCase().indexOf("chunk") != -1) foundChunk = true;
+                }
+                if (foundWall) return "#ffffff";
+                if (foundDoor) return "#0000ff";
+                if (foundChunk) return "#440044";
+            }
+            return "#770000";
+        }
+        
+        function OnLoad() {
+            
+            
+            timeLoadedPage = new Date();
+            let mapId = #(mapId);
+            
+            $.ajax({
+                   url: 'http://woolstrand.art:9000/maps/json/' + mapId,
+                   async: false,
+                   dataType: 'json',
+                   success: function (response) {
+                   data = response
+                   timeLoadedData = new Date();
+                   }
+                   });
+                   
+                   for (var y = 0; y < data.length; y++) {
+                       row = data[y];
+                       for (var x = 0; x < row.length; x ++) {
+                           item = row[x];
+                           color = colorByItem(item);
+                           $('#map').append('<div style="width: 10px; height: 10px; left: ' + (x*cellSize) + 'px; top: ' + (y*cellSize) + 'px; position: absolute; background: ' + color + ';">&nbsp;</div>');
+                       }
+                   }
+                   timeRenderedData = new Date();
+                   
+                   $('#stats').html("Data loaded in " + (timeLoadedData.getTime() - timeLoadedPage.getTime()) + " ms, data rendered in " + (timeRenderedData.getTime() - timeLoadedData.getTime()) + " ms");
+        }
+        
+        function mouseMove(event) {
+            var relativeX = (event.clientX + $(window).scrollLeft());
+            var relativeY = (event.clientY + $(window).scrollTop());
+            var x = Math.floor(relativeX / cellSize);
+            var y = Math.floor(relativeY / cellSize);
+            
+            var cellData = data[y][x];
+            if (cellData == undefined) {
+                $('#floating').hide();
+                return;
+            }
+            
+            if (cellData.objects.length == 0 && cellData.terrain == undefined) {
+                $('#floating').hide();
+                return;
+            }
+            var content = "";
+            if (cellData.terrain != undefined) {
+                content += "<span style='color: #FFFFFF'><b>terrain:</b> " + cellData.terrain.def + "</span><br/>";
+            }
+            if (cellData.objects.length > 0) {
+                for (var i = cellData.objects.length - 1; i >= 0; i--) {
+                    var object = cellData.objects[i];
+                    var descLine = object.def;
+                    if (object.stuffDef != undefined) {
+                        descLine += " made of " + object.stuffDef;
+                        descLine = descLine.replace(" ", "&nbsp;");
+                    }
+                    content += descLine;
+                    content += "<br/>";
+                }
+                
+            }
+            
+            $('#floating').css({top: relativeY + 10, left: relativeX + 10, position:'absolute'});
+            $('#floating').html(content);
+            $('#floating').show();
+            
+            
+        }
+        </script>
+    </head>
+    <body onload="OnLoad();">
+        <div id="map" onmousemove="mouseMove(event);">
+        </div>
+        
+        <div id="floating" class="floating"></div>
+        <div id="stats"> </div>
+    </body>
+</html>
