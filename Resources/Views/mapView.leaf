@@ -15,7 +15,7 @@
         <script type="text/javascript">
             
             let cellSize = 10;
-            var data = [];
+            var matrix = [[]];
             var timeLoadedPage;
             var timeLoadedData;
             var timeRenderedData;
@@ -50,9 +50,10 @@
             
             timeLoadedPage = new Date();
             let mapId = #(mapId);
+            var data = [];
             
             $.ajax({
-                   url: 'http://woolstrand.art:9000/maps/json/' + mapId,
+                   url: '/maps/json2/' + mapId,
                    async: false,
                    dataType: 'json',
                    success: function (response) {
@@ -61,27 +62,62 @@
                    }
                    });
                    
-                   for (var y = 0; y < data.length; y++) {
-                       row = data[y];
+                   var maxX = 0;
+                   var maxY = 0;
+                   for (var index = 0; index < data.length; index ++) {
+                       var object = data[index];
+                       if (matrix[object.y] == undefined) {
+                           matrix[object.y] = []
+                       }
+                       matrix[object.y][object.x] = object;
+                       
+                       if (object.x > maxX) maxX = object.x;
+                       if (object.y > maxY) maxY = object.y;
+                   }
+                   
+                   var canvas = document.getElementById("mapCanvas");
+                   canvas.width = maxX * cellSize;
+                   canvas.height = maxY * cellSize;
+
+                   var ctx = canvas.getContext("2d");
+                   ctx.fillStyle = "#000000";
+                   ctx.fillRect(0, 0, maxX * cellSize, maxY * cellSize);
+
+                   for (var y = 0; y < matrix.length; y++) {
+                       row = matrix[y];
+                       if (row == undefined) continue;
                        for (var x = 0; x < row.length; x ++) {
                            item = row[x];
-                           color = colorByItem(item);
-                           $('#map').append('<div style="width: 10px; height: 10px; left: ' + (x*cellSize) + 'px; top: ' + (y*cellSize) + 'px; position: absolute; background: ' + color + ';">&nbsp;</div>');
+                           if (item != undefined) {
+                               color = colorByItem(item);
+                               ctx.fillStyle = color;
+                               ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                           //$('#map').append('<div style="width: 10px; height: 10px; left: ' + (x*cellSize) + 'px; top: ' + (y*cellSize) + 'px; position: absolute; background: ' + color + ';">&nbsp;</div>');
+                           }
                        }
                    }
+                   
+
                    timeRenderedData = new Date();
                    
                    $('#stats').html("Data loaded in " + (timeLoadedData.getTime() - timeLoadedPage.getTime()) + " ms, data rendered in " + (timeRenderedData.getTime() - timeLoadedData.getTime()) + " ms");
         }
         
         function mouseMove(event) {
-            var relativeX = (event.clientX + $(window).scrollLeft());
-            var relativeY = (event.clientY + $(window).scrollTop());
+            var relativeX = (event.clientX + $(window).scrollLeft() - $('#mapCanvas').offset().left);
+            var relativeY = (event.clientY + $(window).scrollTop() - $('#mapCanvas').offset().top);
             var x = Math.floor(relativeX / cellSize);
             var y = Math.floor(relativeY / cellSize);
             
-            var cellData = data[y][x];
-            if (cellData == undefined) {
+            var rowData = matrix[y];
+            if (rowData == undefined) {
+                $('#floating').hide();
+                return;
+            }
+            
+            var cellData = rowData[x];
+            
+            if (cellData == undefined || cellData == null) {
                 $('#floating').hide();
                 return;
             }
@@ -114,13 +150,36 @@
             
             
         }
+        
+        function voteForRemoval() {
+            $.ajax({url: "/maps/vote/remove/#(mapId)",
+                   method: "POST"
+            }).done(function() {
+                alert("ok, your vote recorded.");
+            }).fail(function() {
+                alert( "error. probably you have already voted.");
+            });
+        }
+        
+        function voteForPromotion() {
+            $.ajax({url: "/maps/vote/promote/#(mapId)",
+                   method: "POST"
+            }).done(function() {
+                alert("ok, your vote recorded.");
+            }).fail(function() {
+                alert( "error. probably you have already voted.");
+            });
+        }
         </script>
     </head>
     <body onload="OnLoad();">
-        <div id="map" onmousemove="mouseMove(event);">
+        <div id="stats"> </div>
+        <div id="vote">
+            <a href = "#" onClick = "voteForRemoval();">Vote for removal</a>&nbsp;&nbsp;&nbsp;
+            <a href = "#" onClick = "voteForPromotion();">Vote for using as a faction base</a>
         </div>
+        <canvas id="mapCanvas" width="100" height="100" onmousemove="mouseMove(event);"></canvas>
         
         <div id="floating" class="floating"></div>
-        <div id="stats"> </div>
     </body>
 </html>
