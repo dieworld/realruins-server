@@ -1,0 +1,76 @@
+#set("content") {
+
+<div class="row">
+<div class="col-xs-1">
+<b>id</b>
+</div>
+<div class="col-xs-4">
+<b>seed</b>
+</div>
+<div class="col-xs-2">
+<b>tileId</b>
+</div>
+<div class="col-xs-1">
+<b>width</b>
+</div>
+<div class="col-xs-1">
+<b>height</b>
+</div>
+<div class="col-xs-2">
+<b>biome</b>
+</div>
+<div class="col-xs-1">
+<b></b>
+</div>
+</div>
+
+#if(count(mapsList) > 0) {
+
+#for(gameMap in mapsList) {
+<div class="row">
+<div class="col-xs-1">
+#(gameMap.id)
+</div>
+<div class="col-xs-4">
+#(gameMap.seed)
+</div>
+<div class="col-xs-2">
+#(gameMap.tileId)
+</div>
+<div class="col-xs-1">
+#(gameMap.width)
+</div>
+<div class="col-xs-1">
+#(gameMap.height)
+</div>
+<div class="col-xs-2">
+#(gameMap.biome)
+</div>
+<div class="col-xs-1">
+<a href = "/view/map/#(gameMap.id)"> View map </a>
+</div>
+
+</div>
+}
+<br />
+<div class=row>
+<div class = "col-xs-6" align=left>
+#if(offset > 0) {
+    <a href = '/view/maps/seed/#(seed)?limit=50&offset=#(offset - 50)'> Prev page </a>
+}
+</div>
+<div class = "col-xs-6" align=right>
+<a href = '/view/maps/seed/#(seed)?limit=50&offset=#(offset + 50)'> Next page </a>
+</div>
+</div>
+<br />
+
+} else {
+<div class="col-xs-12" align = center>
+    No maps found
+</div>
+}
+
+
+}
+#embed("tablebase")

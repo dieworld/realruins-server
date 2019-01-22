@@ -11,6 +11,8 @@
             }
         
             </style>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script type="text/javascript">
             
@@ -173,11 +175,16 @@
         </script>
     </head>
     <body onload="OnLoad();">
-        <div id="stats"> </div>
-        <div id="vote">
-            <a href = "#" onClick = "voteForRemoval();">Vote for removal</a>&nbsp;&nbsp;&nbsp;
-            <a href = "#" onClick = "voteForPromotion();">Vote for using as a faction base</a>
+        <br/>
+        <div class="row" style="width: 800px;">
+            <div class="col-xs-1"> </div>
+            <div id="stats" class="col-xs-5"> </div>
+            <div id="vote" class="col-xs-6">
+                <input type="button" value="Vote for removal" onClick = "voteForRemoval();" /> &nbsp;&nbsp;&nbsp;
+                <input type="button" value="Vote for using as a faction base" onClick = "voteForPromotion();" />
+            </div>
         </div>
+        <br/>
         <canvas id="mapCanvas" width="100" height="100" onmousemove="mouseMove(event);"></canvas>
         
         <div id="floating" class="floating"></div>

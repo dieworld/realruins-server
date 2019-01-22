@@ -1,0 +1,53 @@
+
+#set("content") {
+
+<div class="row">
+<div class="col-xs-8">
+<b>seed</b>
+</div>
+<div class="col-xs-2">
+<b>count</b>
+</div>
+<div class="col-xs-2">
+<b>list maps</b>
+</div>
+</div>
+
+#if(count(seedsList) > 0) {
+
+#for(seed in seedsList) {
+<div class="row">
+<div class="col-xs-8">
+#(seed.seed)
+</div>
+<div class="col-xs-2">
+#(seed.num)
+</div>
+<div class="col-xs-2">
+<a href = "/view/maps/seed/#(seed.seed)"> View maps </a>
+</div>
+
+</div>
+}
+<br />
+<div class=row>
+<div class = "col-xs-6" align=left>
+#if(offset > 0) {
+<a href = '/view/maps/topseeds?limit=50&offset=#(offset - 50)'> Prev page </a>
+}
+</div>
+<div class = "col-xs-6" align=right>
+<a href = '/view/maps/topseeds?limit=50&offset=#(offset + 50)'> Next page </a>
+</div>
+</div>
+<br />
+
+} else {
+<div class="col-xs-12" align = center>
+No maps found
+</div>
+}
+
+
+}
+#embed("tablebase")

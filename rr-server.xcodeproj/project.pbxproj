@@ -22,8 +22,9 @@
 
 /* Begin PBXBuildFile section */
 		0175424121F6C1EE001995E5 /* Vote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175424021F6C1EE001995E5 /* Vote.swift */; };
+		0175424521F7106D001995E5 /* MapsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175424421F7106D001995E5 /* MapsService.swift */; };
 		OBJ_1011 /* MapsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* MapsController.swift */; };
-		OBJ_1012 /* WebMapsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* WebMapsController.swift */; };
+		OBJ_1012 /* MapsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* MapsViewController.swift */; };
 		OBJ_1013 /* GameMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* GameMap.swift */; };
 		OBJ_1014 /* app.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* app.swift */; };
 		OBJ_1015 /* boot.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* boot.swift */; };
@@ -5800,10 +5801,18 @@
 			remoteGlobalIDString = "swift-nio::CNIOLinux";
 			remoteInfo = CNIOLinux;
 		};
+		0175424221F6C1EF001995E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "rr-server::AppTests";
+			remoteInfo = AppTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0175424021F6C1EE001995E5 /* Vote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vote.swift; sourceTree = "<group>"; };
+		0175424421F7106D001995E5 /* MapsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsService.swift; sourceTree = "<group>"; };
 		"Console::Command::Product" /* Command.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Command.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Console::Console::Product" /* Console.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Console.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Console::Logging::Product" /* Logging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Logging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5854,7 +5863,7 @@
 		OBJ_127 /* MySQLDataFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySQLDataFormat.swift; sourceTree = "<group>"; };
 		OBJ_128 /* MySQLEOFPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySQLEOFPacket.swift; sourceTree = "<group>"; };
 		OBJ_129 /* MySQLErrorPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySQLErrorPacket.swift; sourceTree = "<group>"; };
-		OBJ_13 /* WebMapsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebMapsController.swift; sourceTree = "<group>"; };
+		OBJ_13 /* MapsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsViewController.swift; sourceTree = "<group>"; };
 		OBJ_130 /* MySQLFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySQLFlags.swift; sourceTree = "<group>"; };
 		OBJ_131 /* MySQLNullBitmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySQLNullBitmap.swift; sourceTree = "<group>"; };
 		OBJ_132 /* MySQLPacket+HandshakeResponse41.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MySQLPacket+HandshakeResponse41.swift"; sourceTree = "<group>"; };
@@ -7591,9 +7600,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0175424321F71061001995E5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0175424421F7106D001995E5 /* MapsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		OBJ_10 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				0175424321F71061001995E5 /* Services */,
 				OBJ_11 /* Controllers */,
 				OBJ_14 /* Models */,
 				OBJ_16 /* app.swift */,
@@ -7632,7 +7650,7 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_12 /* MapsController.swift */,
-				OBJ_13 /* WebMapsController.swift */,
+				OBJ_13 /* MapsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -11969,12 +11987,13 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_1011 /* MapsController.swift in Sources */,
-				OBJ_1012 /* WebMapsController.swift in Sources */,
+				OBJ_1012 /* MapsViewController.swift in Sources */,
 				OBJ_1013 /* GameMap.swift in Sources */,
 				OBJ_1014 /* app.swift in Sources */,
 				OBJ_1015 /* boot.swift in Sources */,
 				OBJ_1016 /* configure.swift in Sources */,
 				OBJ_1017 /* errors.swift in Sources */,
+				0175424521F7106D001995E5 /* MapsService.swift in Sources */,
 				0175424121F6C1EE001995E5 /* Vote.swift in Sources */,
 				OBJ_1018 /* routes.swift in Sources */,
 				OBJ_1019 /* secureconstants.swift in Sources */,
@@ -16361,7 +16380,7 @@
 		OBJ_3414 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "rr-server::AppTests" /* AppTests */;
-			targetProxy = "rr-server::AppTests" /* AppTests */;
+			targetProxy = 0175424221F6C1EF001995E5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

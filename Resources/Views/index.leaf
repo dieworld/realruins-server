@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>#get(title)</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<body class="container">
+<h1 class="text-center"> Real Ruins blueprints storage </h1>
+
+<div class="row">
+<div class="col-xs-12 col-sm-3">
+<a href = "/view/maps/topseeds"> <h2>Top seeds</h2> </a>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-3">
+<h2>List maps for seed</h2>
+<input type = "text" id = "input_seed" length = "45" />
+<input type = button onClick = "window.location.href = '/view/maps/seed/' + document.getElementById('input_seed').value;" value = "Go!" />
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-3">
+<a href = "/view/maps/random"> <h2>View random map</h2> </a>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-3">
+<a href = "/view/stats"> <h2>Statistics</h2> </a>
+</div>
+</div>
+</div>
+</body>
+</body>
+</html>

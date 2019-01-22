@@ -1,0 +1,17 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Statistics</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container">
+<h1 class="text-center"> Statistics </h1>
+<div class = "row">
+<div class = "col-xs-12">
+<h2>Total blueprints count: #(total)</h2>
+</div>
+</div>
+<br/>
+</body>
+</html>

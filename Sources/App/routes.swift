@@ -15,6 +15,7 @@ public func routes(_ router: Router) throws {
     /// API part
 
     let gameMapController = MapsController()
+    let gameMapViewController = MapsViewController()
     router.get("maps", use: gameMapController.index)
     router.get("maps", "random", use: gameMapController.random)
     router.get("maps", "seed", String.parameter, use: gameMapController.withSeed)
@@ -29,10 +30,12 @@ public func routes(_ router: Router) throws {
     router.post("maps", "vote", "promote", Int.parameter, use: gameMapController.voteForPromotion)
 
     /// Web part
-    router.get("maps", "view", Int.parameter) { (req) throws -> Future<View> in
-        return try req.view().render("mapView", [
-            "mapId": req.parameters.next(Int.self)
-        ])
-    }
+    router.get("view", use:  gameMapViewController.index)
+    router.get("view", "stats", use:  gameMapViewController.viewStats)
+    router.get("view", "map", Int.parameter, use: gameMapViewController.viewMap)
+    router.get("view", "maps", "random", use: gameMapViewController.viewRandomMap)
+    router.get("view", "maps", "topseeds", use:  gameMapViewController.topSeeds)
+
+    router.get("view", "maps", "seed", String.parameter, use: gameMapViewController.withSeed)
 
 }

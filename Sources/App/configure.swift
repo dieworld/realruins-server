@@ -54,6 +54,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     )
     services.register(driver, as: NetworkDriver.self)
     
+    services.register(MapsService.self)
+    
     /// Configure migrations
  //   var migrations = MigrationConfig()
 //    migrations.add(model: Todo.self, database: .sqlite)
