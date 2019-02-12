@@ -32,6 +32,8 @@ final class GameMap: MySQLModel {
     var nameInBucket: String
     var biome: String
     
+    var version: String
+    
     /// Creates a new or updates existing game map blueprint
     init(blueprintData: Data, externalGameId: UInt64?) throws {
         
@@ -55,6 +57,8 @@ final class GameMap: MySQLModel {
         width = blueprintWidth
         height = blueprintHeight
         biome = root.attribute(forName: "biomeDef")?.stringValue ?? ""
+        
+        version = root.attribute(forName: "version")?.stringValue ?? "1.0"
         
         guard let world = root.elements(forName: "world").first else {
             throw RealRuinsError.malformedBlueprintXML("No world tag found")
