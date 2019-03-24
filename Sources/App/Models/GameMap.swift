@@ -22,9 +22,14 @@ final class GameMap: MySQLModel {
     var tileId: Int
     ///Game unique identifier
     var gameId: UInt64
+    var coverage: Int
     
     var width: Int
     var height: Int
+    
+    var originX: Int
+    var originZ: Int
+    var mapSize: Int
     
     var updatedAt: Date
     
@@ -57,7 +62,12 @@ final class GameMap: MySQLModel {
         width = blueprintWidth
         height = blueprintHeight
         biome = root.attribute(forName: "biomeDef")?.stringValue ?? ""
-        
+
+        originX = Int(root.attribute(forName: "x")?.stringValue ?? "0") ?? 0
+        originZ = Int(root.attribute(forName: "z")?.stringValue ?? "0") ?? 0
+        mapSize = Int(root.attribute(forName: "mapSize")?.stringValue ?? "0") ?? 0
+
+
         version = root.attribute(forName: "version")?.stringValue ?? "1.0"
         
         guard let world = root.elements(forName: "world").first else {
@@ -76,6 +86,7 @@ final class GameMap: MySQLModel {
         seed = blueprintSeed
         tileId = blueprintTileId
         gameId = blueprintGameId
+        coverage = Int((Float(world.attribute(forName: "percentage")?.stringValue ?? "0") ?? 0) * 100)
         
         updatedAt = Date()
         nameInBucket = UUID.init().uuidString
