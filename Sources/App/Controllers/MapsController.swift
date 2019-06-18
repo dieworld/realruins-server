@@ -23,6 +23,12 @@ struct Limit: Content {
 }
 
 
+struct MapFilter: Content {
+    let mapSize: Int?
+    let coverage: Int?
+}
+
+
 /// Response structures
 // For map JSON request
 struct GameCell: Content {
@@ -79,10 +85,22 @@ final class MapsController {
             let limitObj = try? req.query.decode(Limit.self)
             let limit = limitObj?.limit ?? 50
             let offset = limitObj?.offset ?? 0
-            
-            return GameMap
+            let filter = try? req.query.decode(MapFilter.self)
+
+            var result = GameMap
                 .query(on: req)
                 .filter(\.seed == seedDecoded)
+            
+            if let mapSize = filter?.mapSize {
+                result = result.filter(\.mapSize == mapSize)
+            }
+            
+            if let coverage = filter?.coverage {
+                result = result.filter(\.coverage == coverage)
+            }
+            
+            return
+                result
                 .sort(MySQLOrderBy.orderBy(MySQLExpression.function("RAND"), MySQLDirection.ascending))
                 .range(offset..<offset+limit)
                 .all()
