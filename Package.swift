@@ -18,6 +18,10 @@ let package = Package(
         
         // 🍃 An expressive, performant, and extensible templating language built for Swift.
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
+        
+        // fixed swift nio version to prevent some errors
+        .package(url: "https://github.com/apple/swift-nio-ssl.git", .exact("1.3.2")),
+        .package(url: "https://github.com/vapor/http.git", .exact("3.1.6")),
     ],
     targets: [
         .target(name: "App", dependencies: ["Storage", "Leaf", "Gzip", "FluentMySQL", "Vapor"]),

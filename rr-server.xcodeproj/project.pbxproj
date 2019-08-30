@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		0175424121F6C1EE001995E5 /* Vote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175424021F6C1EE001995E5 /* Vote.swift */; };
 		0175424521F7106D001995E5 /* MapsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175424421F7106D001995E5 /* MapsService.swift */; };
+		018304522318D598007B70B0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018304512318D597007B70B0 /* Logger.swift */; };
 		OBJ_1011 /* MapsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* MapsController.swift */; };
 		OBJ_1012 /* MapsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* MapsViewController.swift */; };
 		OBJ_1013 /* GameMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* GameMap.swift */; };
@@ -5813,6 +5814,7 @@
 /* Begin PBXFileReference section */
 		0175424021F6C1EE001995E5 /* Vote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vote.swift; sourceTree = "<group>"; };
 		0175424421F7106D001995E5 /* MapsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsService.swift; sourceTree = "<group>"; };
+		018304512318D597007B70B0 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		"Console::Command::Product" /* Command.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Command.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Console::Console::Product" /* Console.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Console.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Console::Logging::Product" /* Logging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Logging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6597,11 +6599,11 @@
 		"Validation::Validation::Product" /* Validation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Validation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Vapor::Vapor::Product" /* Vapor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Vapor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"WebSocket::WebSocket::Product" /* WebSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"rr-server::App::Product" /* App.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"rr-server::App::Product" /* App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"rr-server::AppTests::Product" /* AppTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		"rr-server::Run::Product" /* Run */ = {isa = PBXFileReference; lastKnownFileType = text; path = Run; sourceTree = BUILT_PRODUCTS_DIR; };
 		"swift-nio-ssl::CNIOOpenSSL::Product" /* CNIOOpenSSL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CNIOOpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"swift-nio-ssl::NIOOpenSSL::Product" /* NIOOpenSSL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NIOOpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"swift-nio-ssl::NIOOpenSSL::Product" /* NIOOpenSSL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NIOOpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"swift-nio::CNIOAtomics::Product" /* CNIOAtomics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CNIOAtomics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"swift-nio::CNIODarwin::Product" /* CNIODarwin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CNIODarwin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"swift-nio::CNIOHTTPParser::Product" /* CNIOHTTPParser.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CNIOHTTPParser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7608,9 +7610,18 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		018304502318D589007B70B0 /* Middleware */ = {
+			isa = PBXGroup;
+			children = (
+				018304512318D597007B70B0 /* Logger.swift */,
+			);
+			path = Middleware;
+			sourceTree = "<group>";
+		};
 		OBJ_10 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				018304502318D589007B70B0 /* Middleware */,
 				0175424321F71061001995E5 /* Services */,
 				OBJ_11 /* Controllers */,
 				OBJ_14 /* Models */,
@@ -8644,7 +8655,7 @@
 			path = Register;
 			sourceTree = "<group>";
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -8655,7 +8666,6 @@
 				OBJ_27 /* Dependencies */,
 				OBJ_955 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_501 /* Routing */ = {
@@ -11896,9 +11906,10 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_955 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -11993,6 +12004,7 @@
 				OBJ_1015 /* boot.swift in Sources */,
 				OBJ_1016 /* configure.swift in Sources */,
 				OBJ_1017 /* errors.swift in Sources */,
+				018304522318D598007B70B0 /* Logger.swift in Sources */,
 				0175424521F7106D001995E5 /* MapsService.swift in Sources */,
 				0175424121F6C1EE001995E5 /* Vote.swift in Sources */,
 				OBJ_1018 /* routes.swift in Sources */,
@@ -19971,6 +19983,7 @@
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "SWIFT_PACKAGE DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 				USE_HEADERMAP = NO;
 			};
 			name = Debug;
@@ -20541,6 +20554,7 @@
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_PACKAGE;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 				USE_HEADERMAP = NO;
 			};
 			name = Release;
