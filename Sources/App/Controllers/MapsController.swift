@@ -92,11 +92,15 @@ final class MapsController {
                 .filter(\.seed == seedDecoded)
             
             if let mapSize = filter?.mapSize {
-                result = result.filter(\.mapSize == mapSize)
+                if (mapSize != -1) {
+                    result = result.filter(\.mapSize == mapSize)
+                }
             }
             
             if let coverage = filter?.coverage {
-                result = result.filter(\.coverage == coverage)
+                if (coverage != -1) {
+                    result = result.filter(\.coverage == coverage)
+                }
             }
             
             return
@@ -198,7 +202,6 @@ final class MapsController {
             })
     }
     
-    /// Deletes a parameterized `Todo`.
     func delete(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.parameters.next(GameMap.self).flatMap { gameMap in
             return gameMap.delete(on: req)

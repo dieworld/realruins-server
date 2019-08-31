@@ -24,7 +24,6 @@ class Logger: Middleware {
     }
     
     func respond(to request: Request, chainingTo next: Responder) throws -> EventLoopFuture<Response> {
-        print("\(request)")
         
         let logLine = "\(request.http.method) \(request.http.urlString)"
         writeLog(line: logLine)

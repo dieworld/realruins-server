@@ -71,9 +71,25 @@ final class MapsViewController {
                 let limit = limitObj?.limit ?? 50
                 let offset = limitObj?.offset ?? 0
                 
-                return GameMap
+                let filter = try? req.query.decode(MapFilter.self)
+                
+                var result = GameMap
                     .query(on: req)
                     .filter(\.seed == seedDecoded)
+                
+                if let mapSize = filter?.mapSize {
+                    if mapSize != -1 {
+                        result = result.filter(\.mapSize == mapSize)
+                    }
+                }
+                
+                if let coverage = filter?.coverage {
+                    if coverage != -1 {
+                        result = result.filter(\.coverage == coverage)
+                    }
+                }
+
+                return result
                     .sort(\.id, MySQLDirection.ascending)
                     .range(offset..<offset+limit)
                     .all().flatMap({ (maps) -> Future<View> in
