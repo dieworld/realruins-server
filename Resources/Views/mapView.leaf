@@ -86,7 +86,7 @@
                    ctx.fillRect(0, 0, maxX * cellSize, maxY * cellSize);
 
                    for (var y = 0; y < matrix.length; y++) {
-                       row = matrix[y];
+                       row = matrix[matrix.length - y - 1];
                        if (row == undefined) continue;
                        for (var x = 0; x < row.length; x ++) {
                            item = row[x];
@@ -111,7 +111,7 @@
             var x = Math.floor(relativeX / cellSize);
             var y = Math.floor(relativeY / cellSize);
             
-            var rowData = matrix[y];
+            var rowData = matrix[matrix.length - y - 1];
             if (rowData == undefined) {
                 $('#floating').hide();
                 return;
