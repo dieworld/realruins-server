@@ -27,6 +27,17 @@ struct SeedsListContext: Encodable {
     let title: String
 }
 
+struct DistributionRow: Encodable {
+    let caption: String
+    let data: [Int]
+}
+
+struct DistributionContext: Encodable {
+    let hcaptions: [String]
+    let rows: [DistributionRow]
+    let title: String
+}
+
 final class MapsViewController {
 
     func index(_ req: Request) throws -> Future<View> {
@@ -107,6 +118,40 @@ final class MapsViewController {
             let limit = limitObj?.limit ?? 50
             
             return try req.view().render("seedslist", SeedsListContext(seedsList: seeds, offset: offset, limit: limit, title: "Top seeds list from \(offset) to \(offset + seeds.count)"))
+        })
+    }
+    
+    func mapsDistribution(_ req: Request) throws -> Future<View> {
+        return try MapsController().distribution(req).flatMap({ (distr) throws -> EventLoopFuture<View> in
+            
+            
+            var dataRows: [DistributionRow] = []
+            for row in distr.data {
+                let index = distr.data.index(of: row) ?? 0
+                let coverage = distr.coverages[index]
+                var rowCaption: String = ""
+                if coverage == 0 {
+                    rowCaption = "not specified"
+                } else if coverage == -1 {
+                    rowCaption = "other"
+                } else {
+                    rowCaption = "\(coverage)%"
+                }
+                dataRows.append(DistributionRow(caption: rowCaption, data: row))
+            }
+            
+            var columnCaptions: [String] = []
+            for size in distr.sizes {
+                if size == -1 {
+                    columnCaptions.append("other")
+                } else if size == 0 {
+                    columnCaptions.append("not specified")
+                } else {
+                    columnCaptions.append("\(size)x\(size)")
+                }
+            }
+            
+            return try req.view().render("mapsdistr", DistributionContext(hcaptions: columnCaptions, rows: dataRows, title: "Distribution"))
         })
     }
 }

@@ -57,6 +57,12 @@ struct VoteStats: Content {
     let promoteVotes: Int
 }
 
+struct Distribution: Content {
+    let sizes: [Int]
+    let coverages: [Int]
+    let data: [[Int]]
+}
+
 /// Controls basic CRUD operations on `Map`s.
 final class MapsController {
     /// Returns a list of all `Map`s.
@@ -111,6 +117,37 @@ final class MapsController {
         } else {
             throw RealRuinsError.invalidParameters("No seed provided")
         }
+    }
+    
+    func distribution(_ req: Request) throws -> Future<Distribution> {
+        let coverages = [0, 5, 30, 50, 100, -1]
+        let sizes = [0, 200, 225, 250, 275, 300, 325, 350, 400, -1]
+        let seed = try req.parameters.next(String.self)
+        
+        return req.withPooledConnection(to: .mysql) { conn throws -> Future<[[MySQLColumn: MySQLData]]> in
+            return conn.raw("SELECT coverage, mapSize, count(coverage) FROM GameMap WHERE seed=\"\(seed)\" GROUP BY coverage, mapSize").all()
+            }.map(to: Distribution.self, { (result) -> Distribution in
+                var data = Array<Array<Int>>(repeating: Array<Int>(repeating: 0, count: sizes.count),
+                                             count: coverages.count)
+                
+                let coverageCol = MySQLColumn(table: "GameMap", name: "coverage")
+                let sizeCol = MySQLColumn(table: "GameMap", name: "mapSize")
+                let countCol = MySQLColumn(name: "count(coverage)")
+                
+                for row in result {
+                    let coverage = try row[coverageCol]?.integer(Int32.self) ?? 0
+                    let size = try row[sizeCol]?.integer(Int32.self) ?? 0
+                    let count: Int32 = ((try row[countCol]?.integer(Int32.self)) ?? 0)
+                    
+                    let coverageIndex = coverages.index(of: Int(coverage)) ?? coverages.count - 1
+                    let sizeIndex = sizes.index(of: Int(size)) ?? sizes.count - 1
+                    data[coverageIndex][sizeIndex] += Int(count)
+                }
+                
+                let distr = Distribution(sizes: sizes, coverages: coverages, data: data)
+                return distr
+            })
+        
     }
     
     func topSeeds(_ req: Request) throws -> Future<[Seed]> {

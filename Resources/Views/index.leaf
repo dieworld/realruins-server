@@ -45,6 +45,16 @@
 <input type = button onClick = "window.location.href = '/view/maps/seed/' + document.getElementById('input_seed').value + '?mapSize=' + document.getElementById('mapSize').value + '&coverage=' + document.getElementById('coverage').value" value = "Go!" />
 </div>
 </div>
+
+<div class="row">
+<div class="col-xs-4 col-sm-6">
+<h2>Distribution for maps for seed</h2>
+
+<input type = "text" id = "input_seed_distr" length = "45" />
+
+<input type = button onClick = "window.location.href = '/view/distribution/seed/' + document.getElementById('input_seed_distr').value" value = "Go!" />
+</div>
+</div>
 <div class="row">
 <div class="col-xs-12 col-sm-3">
 <a href = "/view/maps/random"> <h2>View random map</h2> </a>

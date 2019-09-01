@@ -37,5 +37,6 @@ public func routes(_ router: Router) throws {
     router.get("view", "maps", "topseeds", use:  gameMapViewController.topSeeds)
 
     router.get("view", "maps", "seed", String.parameter, use: gameMapViewController.withSeed)
+    router.get("view", "distribution", "seed", String.parameter, use: gameMapViewController.mapsDistribution)
 
 }
