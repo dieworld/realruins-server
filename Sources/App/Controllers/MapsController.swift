@@ -77,11 +77,11 @@ final class MapsController {
     func random(_ req: Request) throws -> Future<[GameMap]> {
         let limitObj = try? req.query.decode(Limit.self)
         let limit = limitObj?.limit ?? 50
-        return GameMap
-            .query(on: req)
-            .sort(MySQLOrderBy.orderBy(MySQLExpression.function("RAND"), MySQLDirection.ascending))
-            .range(..<limit)
-            .all()
+        
+        //here I return <limit> of records starting from random ID. It actually doesn't matter that maps are following one after another as those maps will be used as just ingredients.
+        return req.withPooledConnection(to: .mysql) { conn throws -> Future<[GameMap]> in
+            return conn.raw("SELECT * FROM GameMap JOIN (SELECT (RAND() * (SELECT MAX(id) FROM GameMap)) AS id) AS r2 WHERE GameMap.id >= r2.id ORDER BY GameMap.id ASC LIMIT \(limit);").all(decoding:GameMap.self)
+            }
     }
     
     func withSeed(_ req: Request) throws -> Future<[GameMap]> {
@@ -125,7 +125,7 @@ final class MapsController {
         let seed = try req.parameters.next(String.self)
         
         return req.withPooledConnection(to: .mysql) { conn throws -> Future<[[MySQLColumn: MySQLData]]> in
-            return conn.raw("SELECT coverage, mapSize, count(coverage) FROM GameMap WHERE seed=\"\(seed)\" GROUP BY coverage, mapSize").all()
+            return conn.raw("SELECT coverage, mapSize, count(coverage) FROM GameMap WHERE seed = BINARY \"\(seed)\" GROUP BY coverage, mapSize").all()
             }.map(to: Distribution.self, { (result) -> Distribution in
                 var data = Array<Array<Int>>(repeating: Array<Int>(repeating: 0, count: sizes.count),
                                              count: coverages.count)
