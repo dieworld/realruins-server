@@ -2,7 +2,7 @@
 #set("content") {
 
 <div class="row">
-<div class="col-xs-8">
+<div class="col-xs-6">
 <b>seed</b>
 </div>
 <div class="col-xs-2">
@@ -11,13 +11,16 @@
 <div class="col-xs-2">
 <b>list maps</b>
 </div>
+<div class="col-xs-2">
+<b>distribution</b>
+</div>
 </div>
 
 #if(count(seedsList) > 0) {
 
 #for(seed in seedsList) {
 <div class="row">
-<div class="col-xs-8">
+<div class="col-xs-6">
 #(seed.seed)
 </div>
 <div class="col-xs-2">
@@ -25,6 +28,9 @@
 </div>
 <div class="col-xs-2">
 <a href = "/view/maps/seed/#(seed.seed)"> View maps </a>
+</div>
+<div class="col-xs-2">
+<a href = "/view/distribution/seed/#(seed.seed)"> Distribution </a>
 </div>
 
 </div>
